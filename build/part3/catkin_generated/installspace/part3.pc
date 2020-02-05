@@ -1,0 +1,8 @@
+prefix=/home/zahid/dd2419_ws/install
+
+Name: part3
+Description: Description of part3
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/zahid/dd2419_ws/install/lib 
+Requires: 

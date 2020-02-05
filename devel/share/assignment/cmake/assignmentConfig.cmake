@@ -1,0 +1,1 @@
+/home/zahid/dd2419_ws/devel/.private/assignment/share/assignment/cmake/assignmentConfig.cmake

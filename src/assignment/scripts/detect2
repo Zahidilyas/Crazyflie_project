@@ -1,0 +1,78 @@
+#!/usr/bin/env python
+from __future__ import print_function
+
+import roslib
+import sys
+import rospy
+import cv2
+import numpy as np
+import time
+from std_msgs.msg import String
+from sensor_msgs.msg import Image
+from cv_bridge import CvBridge, CvBridgeError
+
+class image_converter:
+
+  def __init__(self):
+    self.image_pub = rospy.Publisher("/myresult", Image, queue_size=2)
+
+    self.bridge = CvBridge()
+    self.image_sub = rospy.Subscriber("/cf1/camera/image_raw", Image, self.callback)
+
+  def callback(self,data):
+    # Convert the image from OpenCV to ROS format
+    try:
+      cv_image = self.bridge.imgmsg_to_cv2(data, "bgr8")
+    except CvBridgeError as e:
+      print(e)
+
+    # Convert BGR to HSV
+    hsv = cv2.cvtColor(cv_image, cv2.COLOR_BGR2HSV)
+
+    # upper mask (170-180)
+    lower_red = np.array([170,50,50])
+    upper_red = np.array([180,255,255])
+    mask = cv2.inRange(hsv, lower_red, upper_red)
+
+    res = cv2.bitwise_and(cv_image, cv_image, mask= mask)
+    red_img = self.bridge.cv2_to_imgmsg(res, "bgr8")
+
+    # print(np.sum(res,2).shape)
+    #removing the 3rd dimension
+    res1 = np.sum(res,2)
+    #reshaping
+    res2 = np.reshape(res1,(307200,1))
+    # print(res2)
+    # mat = np.array([0.0001, 10.234, 0,1])
+    # mat = [1,0,1]
+    if cv2.countNonZero(res2)>100:
+        print("Sign detected")
+        # print(cv2.countNonZero(res2),' red pixels \n')
+    else:
+        print('No detection')
+    # print(cv2.countNonZero(res2))
+    # print(sum(sum(sum(res))))
+
+    time.sleep(0.1)
+
+    # Publish the image
+    try:
+      self.image_pub.publish(self.bridge.cv2_to_imgmsg(res, "bgr8"))
+    except CvBridgeError as e:
+      print(e)
+
+def main(args):
+  rospy.init_node('detect', anonymous=True)
+
+  ic = image_converter()
+
+  print("running...")
+  try:
+    rospy.spin()
+  except KeyboardInterrupt:
+    print("Shutting down")
+
+  cv2.destroyAllWindows()
+
+if __name__ == '__main__':
+    main(sys.argv)

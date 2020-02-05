@@ -1,0 +1,111 @@
+#!/usr/bin/env python
+
+import math
+import rospy
+import tf2_ros
+import tf2_geometry_msgs
+import time
+import math
+from tf.transformations import euler_from_quaternion, quaternion_from_euler
+from geometry_msgs.msg import PoseStamped
+from crazyflie_driver.msg import Position
+
+
+def publish_cmd(goal_loc):
+    # Need to tell TF that the goal_loc was just generated
+    goal_loc.header.stamp = rospy.Time.now()
+    pub_cmd.publish(goal_loc)
+
+
+rospy.init_node('move_drone_2')
+pub_cmd  = rospy.Publisher('/move_base_simple/goal', PoseStamped, queue_size=10)
+
+def main():
+    rate = rospy.Rate(10)  # Hz
+
+    goal1_loc = PoseStamped()
+    goal1_loc.header.stamp = rospy.Time.now()
+    goal1_loc.header.frame_id = 'map'
+    goal1_loc.pose.position.x = 0
+    goal1_loc.pose.position.y = 0
+    goal1_loc.pose.position.z = 0
+    goal1_loc.pose.orientation.x = 0
+    goal1_loc.pose.orientation.y = 0
+    goal1_loc.pose.orientation.z = 0.1
+    goal1_loc.pose.orientation.w = 0.1
+
+    goal2_loc = PoseStamped()
+    goal2_loc.header.stamp = rospy.Time.now()
+    goal2_loc.header.frame_id = 'map'
+    goal2_loc.pose.position.x = -2.5
+    goal2_loc.pose.position.y = -1
+    goal2_loc.pose.position.z = 0
+    goal2_loc.pose.orientation.x = 0
+    goal2_loc.pose.orientation.y = 0
+    goal2_loc.pose.orientation.z = 0.1
+    goal2_loc.pose.orientation.w = 0.1
+
+    goal3_loc = PoseStamped()
+    goal3_loc.header.stamp = rospy.Time.now()
+    goal3_loc.header.frame_id = 'map'
+    goal3_loc.pose.position.x = -1
+    goal3_loc.pose.position.y = -1
+    goal3_loc.pose.position.z = 0
+    goal3_loc.pose.orientation.x = 0
+    goal3_loc.pose.orientation.y = 0
+    goal3_loc.pose.orientation.z = 0.1
+    goal3_loc.pose.orientation.w = 0.1
+
+    goal4_loc = PoseStamped()
+    goal4_loc.header.stamp = rospy.Time.now()
+    goal4_loc.header.frame_id = 'map'
+    goal4_loc.pose.position.x = 1
+    goal4_loc.pose.position.y = -1
+    goal4_loc.pose.position.z = 0
+    goal4_loc.pose.orientation.x = 0
+    goal4_loc.pose.orientation.y = 0
+    goal4_loc.pose.orientation.z = 0.1
+    goal4_loc.pose.orientation.w = 0.1
+
+    goal5_loc = PoseStamped()
+    goal5_loc.header.stamp = rospy.Time.now()
+    goal5_loc.header.frame_id = 'map'
+    goal5_loc.pose.position.x = 2.5
+    goal5_loc.pose.position.y = -1
+    goal5_loc.pose.position.z = 0
+    goal5_loc.pose.orientation.x = 0
+    goal5_loc.pose.orientation.y = 0
+    goal5_loc.pose.orientation.z = 0.1
+    goal5_loc.pose.orientation.w = 0.1
+
+    time.sleep(1)
+    T = rospy.Time.now()
+    # print(rospy.Time.now())
+    while not rospy.is_shutdown():
+        
+        # print(rospy.Time.now())
+        if rospy.Time.now() < T + rospy.Duration(5):
+            publish_cmd(goal1_loc)
+            print(1)
+        elif rospy.Time.now() < T + rospy.Duration(10):
+            publish_cmd(goal2_loc)
+            print(2)
+        elif rospy.Time.now() < T + rospy.Duration(15):
+            publish_cmd(goal5_loc)
+            print(3)
+        elif rospy.Time.now() < T + rospy.Duration(20):
+            publish_cmd(goal5_loc)
+            print(4)
+        else:
+            publish_cmd(goal5_loc)
+            print(5)
+        
+        if rospy.Time.now() > T + rospy.Duration(25):
+            break
+
+        # publish_cmd(goal_loc)
+        rate.sleep()
+        
+
+if __name__ == '__main__':
+    main()

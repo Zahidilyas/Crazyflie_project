@@ -1,0 +1,4 @@
+Symlinking /home/zahid/dd2419_ws/devel/lib/libcrazyflie_cpp.so
+Symlinking /home/zahid/dd2419_ws/devel/lib/pkgconfig/crazyflie_cpp.pc
+Symlinking /home/zahid/dd2419_ws/devel/share/crazyflie_cpp/cmake/crazyflie_cppConfig.cmake
+Symlinking /home/zahid/dd2419_ws/devel/share/crazyflie_cpp/cmake/crazyflie_cppConfig-version.cmake

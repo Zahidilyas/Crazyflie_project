@@ -1,0 +1,1 @@
+/home/zahid/dd2419_ws/devel/.private/part2/share/part2/cmake/part2Config.cmake

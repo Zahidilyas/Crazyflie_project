@@ -1,0 +1,15 @@
+<launch>
+    <node name="displaymapmarkers" pkg="part2" type="displaymapmarkers" args="$(find dd2419_resources)/worlds_json/tutorial_1.world.json" />
+    <node name="cf1_odom_publisher" pkg="tf2_ros" type="static_transform_publisher" args="0 0 0 0 0 0 /map cf1/odom" /> 
+    <node name="camera_link_publisher" pkg="tf2_ros" type="static_transform_publisher" args="0.01 0 0.02 -1.5708 0 -1.5708 cf1/base_link camera_link" /> 
+    <node name="navgoal3" pkg="part2" type="navgoal3"/>
+
+    <!-- Run aruco.launch file -->
+    <include file="$(find dd2419_simulation)/launch/aruco.launch"/>
+
+    <node name="arucoframe2" pkg="assignment" type="arucoframe2"/>
+    <node name="move_drone_2" pkg="assignment" type="move_drone_2"/>
+
+
+</launch>
+

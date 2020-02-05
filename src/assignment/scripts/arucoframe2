@@ -1,0 +1,77 @@
+#!/usr/bin/env python
+
+import sys
+import math
+import json
+
+import rospy
+import tf2_ros 
+import tf2_geometry_msgs
+from tf.transformations import quaternion_from_euler
+from tf.transformations import euler_from_quaternion
+from geometry_msgs.msg import TransformStamped, Vector3, PoseStamped
+from aruco_msgs.msg import MarkerArray
+from crazyflie_driver.msg import Position
+
+# Current goal (global state)
+goal = None
+msgg = None
+
+def goal_callback(msg):
+    global goal
+    global msgg
+    msgg = msg
+
+def publish_cmd(trans,id):
+   
+    Position_a = [trans.pose.position.x, trans.pose.position.y, trans.pose.position.z]
+    Orientation_a = [trans.pose.orientation.x, trans.pose.orientation.y, trans.pose.orientation.z]
+        
+    # print(Position_a)
+    t = TransformStamped()
+    t.header.frame_id = trans.header.frame_id
+    t.header.stamp = rospy.Time.now()
+    t.child_frame_id = 'aruco/detected' + str(id)
+    t.transform.translation = Vector3(*Position_a)
+    roll, pitch, yaw = Orientation_a
+    (t.transform.rotation.x,
+    t.transform.rotation.y,
+    t.transform.rotation.z,
+    t.transform.rotation.w) = quaternion_from_euler(math.radians(roll),
+                                                    math.radians(pitch),
+                                                    math.radians(yaw))
+
+    # Publish these transforms statically forever
+    broadcaster = tf2_ros.TransformBroadcaster()
+    broadcaster.sendTransform(t)
+
+
+rospy.init_node('arucoframe')
+#Subscribe to aruco marker topic
+sub_goal = rospy.Subscriber('/aruco/markers', MarkerArray, goal_callback)
+tf_buf   = tf2_ros.Buffer()
+tf_lstn  = tf2_ros.TransformListener(tf_buf)
+
+def main():
+    global msgg
+    rate = rospy.Rate(10)  # Hz
+    while not rospy.is_shutdown():
+        if msgg:
+            read = msgg
+            for ind in range(len(read.markers)):
+
+                goall = PoseStamped()
+                goall.header.frame_id = read.header.frame_id
+                goall.pose.position = read.markers[ind].pose.pose.position 
+                goall.pose.orientation = read.markers[ind].pose.pose.orientation
+                try:
+                    trans = tf_buf.transform(goall, 'map')
+                except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
+                    rate.sleep()
+                    continue
+                publish_cmd(trans,read.markers[ind].id)
+            msgg = None
+        rate.sleep()
+
+if __name__ == "__main__":
+    main()
