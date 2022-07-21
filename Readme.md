@@ -1,11 +1,6 @@
 # Project milestones
-## PRELIMINARY - STUDENTS: PLEASE READ AND COMMENT
-
-A number of milestones have been defined along the way to the final system design. The milestones defines what but not how. At these milestones you are expected to demonstrate that you meet the requirements. The milestones will put some constraints on the order in which you do things, i.e. less freedom for you but we think that there are two strong reasons for why you will thank us in the end. Firstly, it helps your planning and adds some external help to reduce the tension in the group that is likely to build up from strong opinion regarding the schedule. Second, most real world project have some form of milestones along the way where you need to show the status. These might be decision point where a project owner makes decisions for how to move on or even terminate.
-
-NOTE: Nothing in the milestones can be demonstrated using Gazebo.
-
-NOTE: Read all milestones and make a plan for when the development of certain functionality has to start. Just looking at the next milestone will likely fail.
+## COURSE PROJECT
+Implemented the vision and control on a tiny drone and statisfied the following milestones
 
 ## Milestone 1
 
